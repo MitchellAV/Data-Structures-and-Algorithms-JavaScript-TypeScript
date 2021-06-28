@@ -45,6 +45,20 @@ var SinglyLinkedList = /** @class */ (function () {
         enumerable: false,
         configurable: true
     });
+    Object.defineProperty(SinglyLinkedList.prototype, "head", {
+        get: function () {
+            return this._head;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(SinglyLinkedList.prototype, "tail", {
+        get: function () {
+            return this._tail;
+        },
+        enumerable: false,
+        configurable: true
+    });
     SinglyLinkedList.prototype.isEmpty = function () {
         return this._length === 0;
     };
@@ -61,28 +75,38 @@ var SinglyLinkedList = /** @class */ (function () {
         }
         // if linked list is not empty
         else {
-            this._tail._next = node;
+            if (this._tail) {
+                this._tail._next = node;
+            }
         }
         this._tail = node;
         this._length++;
     };
     /**
-     * addToHead
+     * Insert: O(1)
+     * @description Adds a node with data to the head of the linked list
+     * @param data
      */
     SinglyLinkedList.prototype.addToHead = function (data) {
         var node = new SinglyLinkedListNode(data);
         // if linked list is empty
         if (this._head === null) {
             this._head = node;
+            this._tail = node;
         }
         // if linked list is not empty
         else {
             node._next = this._head;
             this._head = node;
         }
-        this._tail = node;
         this._length++;
     };
+    /**
+     * Insert: O(n)
+     * @description Adds a node with data at an index of the linked list
+     * @param index
+     * @param data
+     */
     SinglyLinkedList.prototype.addAtIndex = function (index, data) {
         if (index >= this._length)
             throw new Error("Index is out of bounds");
@@ -95,11 +119,11 @@ var SinglyLinkedList = /** @class */ (function () {
         }
         else {
             var currNode = this._head;
-            var prevNode = currNode;
+            var prevNode = void 0;
             var currIndex = 0;
             while (currNode && currIndex < index) {
                 prevNode = currNode;
-                currNode = currNode._next || null;
+                currNode = currNode._next;
                 currIndex++;
             }
             node._next = currNode;
@@ -118,11 +142,13 @@ var SinglyLinkedList = /** @class */ (function () {
         }
         else {
             var currNode = this._head;
-            var currIndex = 0;
-            while (currIndex + 2 < this._length) {
+            var prevNode = currNode;
+            while (currNode && currNode._next) {
+                prevNode = currNode;
                 currNode = currNode._next;
-                currIndex++;
             }
+            prevNode._next = null;
+            this._tail = prevNode;
             removedNode = currNode._next;
             currNode._next = null;
         }
@@ -144,28 +170,40 @@ var SinglyLinkedList = /** @class */ (function () {
         }
         return removedNode;
     };
-    // public removeAtIndex(index: number, data: T) {
-    //   if (index >= this._length) throw new Error("Index is out of bounds");
-    //   if (index < 0) throw new Error("Index must be a non-negative number");
-    //   const node = new SinglyLinkedListNode(data);
-    //   if (index === 0) {
-    //     node._next = this._head;
-    //     this._head = node;
-    //   } else {
-    //     let currNode = this._head;
-    //     let prevNode = currNode;
-    //     let currIndex = 0;
-    //     while (currIndex < index) {
-    //       prevNode = currNode;
-    //       currNode = currNode?._next || null;
-    //       currIndex++;
-    //     }
-    //     node._next = currNode;
-    //     prevNode!._next = node;
-    //   }
-    //   this._length++;
-    // }
-    SinglyLinkedList.prototype.printLinkedList = function () {
+    SinglyLinkedList.prototype.removeAtIndex = function (index) {
+        if (index >= this._length)
+            throw new Error("Index is out of bounds");
+        if (index < 0)
+            throw new Error("Index must be a non-negative number");
+        if (this._length === 0)
+            throw new Error("Linked List is empty and there are no items to remove");
+        var removedNode;
+        if (index === 0) {
+            removedNode = this.removeFromHead();
+        }
+        else if (index === this._length - 1) {
+            removedNode = this.removeFromTail();
+            console.log("ghit");
+        }
+        else {
+            var currNode = this._head;
+            var prevNode = void 0;
+            var currIndex = 0;
+            while (currNode && currIndex < index) {
+                prevNode = currNode;
+                currNode = currNode._next;
+                currIndex++;
+            }
+            removedNode = currNode;
+            if (prevNode && currNode) {
+                var nextNode = currNode === null || currNode === void 0 ? void 0 : currNode._next;
+                prevNode._next = nextNode;
+            }
+        }
+        this._length--;
+        return removedNode;
+    };
+    SinglyLinkedList.prototype.toArray = function () {
         var node = this._head;
         var linkedListData = [];
         while (node !== null) {
