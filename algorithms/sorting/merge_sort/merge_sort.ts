@@ -1,3 +1,9 @@
+/**
+ * Time: O(n log(n)) Best, Average, and Worst
+ * Space: O(n) Worst
+ * @param unorderedList
+ * @returns sorted list ascending
+ */
 export const merge_sort = (unorderedList: number[]) => {
   if (unorderedList.length === 0) {
     return [];

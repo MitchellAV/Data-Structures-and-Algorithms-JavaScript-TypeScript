@@ -1,6 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.merge_sort = void 0;
+/**
+ * Time: O(n log(n)) Best, Average, and Worst
+ * Space: O(n) Worst
+ * @param unorderedList
+ * @returns sorted list ascending
+ */
 var merge_sort = function (unorderedList) {
     if (unorderedList.length === 0) {
         return [];
